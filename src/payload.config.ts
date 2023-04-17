@@ -1,13 +1,11 @@
 import { buildConfig } from "payload/config"
 import path from "path"
-import { Users } from "./collections"
+import { Admins, Users } from "./collections"
 
 export default buildConfig({
   serverURL: process.env.SERVER_URL,
-  admin: {
-    user: Users.slug,
-  },
-  collections: [Users],
+  admin: { user: Admins.slug },
+  collections: [Admins, Users],
   csrf: [String(process.env.CLIENT_URL)],
   cors: [String(process.env.CLIENT_URL)],
   cookiePrefix: "auth",

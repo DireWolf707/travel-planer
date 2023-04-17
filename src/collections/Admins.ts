@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload/types"
 
-const Users: CollectionConfig = {
-  slug: "users",
+const Admins: CollectionConfig = {
+  slug: "admins",
   auth: {
     tokenExpiration: 12 * 60 * 60, // 12 hours
     cookies: {
@@ -11,24 +11,16 @@ const Users: CollectionConfig = {
     verify: false,
   },
   admin: {
-    useAsTitle: "username",
-    group: "Authentication",
-  },
-  access: {
-    read: () => true,
-    create: () => true,
-    delete: () => true,
-    update: () => true,
+    useAsTitle: "email",
+    group: "Admin",
   },
   fields: [
     {
-      name: "username",
+      name: "name",
       type: "text",
-      unique: true,
       required: true,
-      saveToJWT: true,
     },
   ],
 }
 
-export default Users
+export default Admins

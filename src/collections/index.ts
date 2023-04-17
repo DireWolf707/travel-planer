@@ -1,3 +1,4 @@
 import Users from "./Users"
+import Admins from "./Admins"
 
-export { Users }
+export { Admins, Users }
