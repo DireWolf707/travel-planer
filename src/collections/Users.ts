@@ -12,13 +12,7 @@ const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: "username",
-    group: "Authentication",
-  },
-  access: {
-    read: () => true,
-    create: () => true,
-    delete: () => true,
-    update: () => true,
+    group: "Social Media",
   },
   fields: [
     {
