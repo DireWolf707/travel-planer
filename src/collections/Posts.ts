@@ -17,6 +17,11 @@ const Posts: CollectionConfig = {
       relationTo: "users",
       required: true,
     },
+    {
+      name: "caption",
+      type: "text",
+      required: true,
+    },
   ],
 }
 
