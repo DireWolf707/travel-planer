@@ -22,6 +22,16 @@ const Posts: CollectionConfig = {
       type: "text",
       required: true,
     },
+    {
+      name: "tags",
+      type: "array",
+      fields: [
+        {
+          name: "tag",
+          type: "text",
+        }
+      ],
+    },
   ],
 }
 
