@@ -1,5 +1,6 @@
 src/media
 .env.prod
+build
 
 ### Node ###
 # Logs
