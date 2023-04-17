@@ -1,7 +1,9 @@
 import express from "express"
 import payload from "payload"
 
-require("dotenv").config()
+require("dotenv").config({
+  path: process.env.NODE_ENV === "production" ? "/etc/secrets/.env" : ".env"
+})
 const app = express()
 
 // Redirect root to Admin panel
