@@ -52,25 +52,20 @@ const Posts: CollectionConfig = {
       if (!isAdmin({ req })) data = { ...data, userId: req.user.id }
 
       const file = req?.files?.file
-      if (file) {
+      if (!file) return data
+
+      try {
         const formData = new FormData()
         formData.append("image", file.data)
-
-        try {
-          const resp = await axios.post(
-            "https://api.imagga.com/v2/tags?limit=3&threshold=40.0",
-            formData,
-            { headers: { Authorization: process.env.IMAGGA_AUTHORIZATION_HEADER, "Content-Type": "multipart/form-data" } }
-          )
-          const tags = resp.data.result.tags.map((t) => ({ tag: t.tag.en }))
-          data = { ...data, tags }
-        } catch (err) {
-          console.log(err.message)
-          throw new Error("something went wrong!")
-        }
+        const resp = await axios.post("https://api.imagga.com/v2/tags?limit=3&threshold=40.0",
+          formData,
+          { headers: { Authorization: process.env.IMAGGA_AUTHORIZATION_HEADER } })
+        const tags = resp.data.result.tags.map((t) => ({ tag: t.tag.en }))
+        return { ...data, tags }
+      } catch (err) {
+        console.log(err.message)
+        throw new Error("something went wrong!")
       }
-
-      return data
     }],
   },
 }
