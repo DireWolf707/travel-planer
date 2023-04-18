@@ -4,7 +4,19 @@ import { Admins, Users, Follows, Posts, Likes } from "./collections"
 
 export default buildConfig({
   serverURL: process.env.RENDER_EXTERNAL_URL || process.env.SERVER_URL,
-  admin: { user: Admins.slug },
+  admin: {
+    user: Admins.slug,
+    // webpack: (config) => ({
+		// 	...config,
+		// 	resolve: {
+		// 		...config.resolve,
+		// 		alias: {
+		// 			...config.resolve.alias,
+		// 			fs: path.resolve(__dirname, "mocks/emptyObject.js"),
+		// 		}
+		// 	}
+		// })
+  },
   collections: [Admins, Users, Follows, Posts, Likes],
   csrf: [String(process.env.CLIENT_URL)],
   cors: [String(process.env.CLIENT_URL)],
