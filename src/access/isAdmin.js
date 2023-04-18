@@ -1,1 +1,1 @@
-export default ({ req }) => Boolean(req?.user?.collection === "admin")
+export default ({ req }) => Boolean(req?.user?.collection === "admins")
