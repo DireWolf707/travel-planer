@@ -2,6 +2,7 @@ import { CollectionConfig } from "payload/types"
 import { isAdmin, isAuthenticated } from "../access"
 import FormData from "form-data"
 import axios from "axios"
+import { feedPipeline } from "../utils/pipelines"
 
 const Posts: CollectionConfig = {
   slug: "posts",
@@ -74,54 +75,8 @@ const Posts: CollectionConfig = {
     handler: async (req, res, next) => {
       const userId = req.user?.id
       if (!userId) return next(new Error("not authenticated"))
-
-      const feed = await req.payload.collections["follows"].Model.aggregate([
-        { $match: { from: userId } },
-        { $project: { to: 1, _id: 0 } },
-        {
-          $lookup: {
-            from: "posts",
-            as: "posts",
-            let: { requiredUser: "$to" },
-            pipeline: [
-              { $match: { $expr: { $eq: ["$userId", "$$requiredUser"] } } },
-              { $project: { userId: 1, caption: 1, createdAt: 1, url: 1 } },
-              {
-                $lookup: {
-                  from: "likes",
-                  as: "likes",
-                  let: { requiredPost: "$_id" },
-                  pipeline: [
-                    { $set: { _requiredPost: { $toString: "$$requiredPost" } } },
-                    { $match: { $expr: { $eq: ["$postId", "$_requiredPost"] } } },
-                  ]
-                }
-              },
-              { $set: { totalLikes: { $size: "$likes" }, liked: { $in: [userId, "$likes.userId"] } } },
-              { $unset: "likes" },
-              {
-                $lookup: {
-                  from: "users",
-                  as: "user",
-                  let: { requiredUser: "$userId" },
-                  pipeline: [
-                    { $set: { _requiredUser: { $toObjectId: "$$requiredUser" } } },
-                    { $match: { $expr: { $eq: ["$_id", "$_requiredUser"] } } },
-                  ]
-                }
-              },
-              { $unwind: "$user" },
-              { $set: { username: "$user.username" } },
-              { $unset: "user" },
-            ]
-          }
-        },
-        { $unset: "to" },
-        { $unwind: "$posts" },
-        { $replaceRoot: { newRoot: "$posts" } },
-        { $sort: { createdAt: -1 } }
-      ])
-
+      // @ts-ignore
+      const feed = await req.payload.collections["follows"].Model.aggregate(feedPipeline(userId))
       res.status(200).json({ feed })
     }
   }]
