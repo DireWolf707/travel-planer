@@ -33,14 +33,8 @@ const Posts: CollectionConfig = {
       required: true,
     },
     {
-      name: "tags",
-      type: "array",
-      fields: [
-        {
-          name: "tag",
-          type: "text",
-        }
-      ],
+      name: "tag",
+      type: "text",
       access: {
         create: () => false,
         read: () => true,
@@ -58,11 +52,11 @@ const Posts: CollectionConfig = {
       try {
         const formData = new FormData()
         formData.append("image", file.data)
-        const resp = await axios.post("https://api.imagga.com/v2/tags?limit=3&threshold=40.0",
+        const resp = await axios.post("https://api.imagga.com/v2/tags?limit=1",
           formData,
           { headers: { Authorization: process.env.IMAGGA_AUTHORIZATION_HEADER } })
-        const tags = resp.data.result.tags.map((t) => ({ tag: t.tag.en }))
-        return { ...data, tags }
+        const tag = resp.data.result.tags[0].tag.en
+        return { ...data, tag }
       } catch (err) {
         console.log(err.message)
         throw new Error("something went wrong!")
