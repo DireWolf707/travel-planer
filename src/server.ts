@@ -3,6 +3,7 @@ import express from "express"
 import payload from "payload"
 import planner from "./utils/planner"
 import suggestion from "./utils/suggestion"
+import cors from "cors"
 
 const app = express()
 
@@ -22,9 +23,15 @@ const start = async () => {
     },
   })
 
-
   app.use(payload.authenticate)
   app.use(express.json({ limit: "10kb" }))
+  app.use(
+    cors({
+      origin: process.env.CLIENT_URL,
+      credentials: true,
+    })
+  )
+  app.get("/health", (req, res) => res.json("Health check"))
   app.post("/travel-planner", async (req, res) => {
     // @ts-ignore
     if (!req.user) return res.status(403).json("not authenticated")
@@ -39,9 +46,12 @@ const start = async () => {
     const userId = req.user?.id
     if (!userId) return res.status(403).json("not authenticated")
     // @ts-ignore
-    const last3LikedPost = await req.payload.collections["likes"].Model.find({ userId }, "postId -_id").sort({ createdAt: -1 }).limit(3).populate({ path: "postId", select: "tag -_id" })
+    const last3LikedPost = await req.payload.collections["likes"].Model.find({ userId }, "postId -_id")
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .populate({ path: "postId", select: "tag -_id" })
     if (last3LikedPost.length < 3) return res.status(403).json("not enough likes")
-    
+
     const last3LikedPostTags = last3LikedPost.map(({ postId }) => postId.tag)
     const resp = await suggestion(last3LikedPostTags)
     res.status(200).json(resp)
