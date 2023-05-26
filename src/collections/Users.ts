@@ -53,8 +53,8 @@ const Users: CollectionConfig = {
             to: profileId,
           },
         })
-        
-        res.status(200).json({ profile, isFollowed: Boolean(isFollowed) })
+
+        res.status(200).json({ profile: { ...profile, isFollowed: Boolean(isFollowed) } })
       },
     },
   ],
