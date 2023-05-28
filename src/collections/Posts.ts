@@ -17,7 +17,7 @@ const Posts: CollectionConfig = {
   },
   upload: {
     staticURL: "/media",
-    staticDir: "media",
+    // staticDir: "media",
     mimeTypes: ["image/*"],
   },
   fields: [
