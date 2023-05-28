@@ -8,7 +8,7 @@ export const feedPipeline = (userId) => [
       let: { requiredUser: "$to" },
       pipeline: [
         { $match: { $expr: { $eq: ["$userId", "$$requiredUser"] } } },
-        { $project: { userId: 1, caption: 1, createdAt: 1, url: 1 } },
+        { $project: { userId: 1, caption: 1, createdAt: 1, filename: 1 } },
         {
           $lookup: {
             from: "likes",
@@ -56,7 +56,7 @@ export const profilePipeline = (profileId, userId) => [
       pipeline: [
         { $set: { _requiredUser: { $toString: "$$requiredUser" } } },
         { $match: { $expr: { $eq: ["$userId", "$_requiredUser"] } } },
-        { $project: { userId: 1, caption: 1, createdAt: 1, url: 1 } },
+        { $project: { userId: 1, caption: 1, createdAt: 1, filename: 1 } },
         {
           $lookup: {
             from: "likes",
