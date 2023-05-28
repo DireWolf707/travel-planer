@@ -2,6 +2,7 @@ src/media
 .env.prod
 build
 tests
+.env
 
 ### Node ###
 # Logs
